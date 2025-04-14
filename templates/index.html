@@ -1,1 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bill Splitter App</title>
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary-color: #f472b6;
+            --secondary-dark: #db2777;
+            --text-color: #1f2937;
+            --light-gray: #f3f4f6;
+            --white: #ffffff;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f9fafb;
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-color);
+        }
+
+        /* Hero section */
+        .hero {
+            padding: 5rem 0;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 76px);
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-secondary {
+            background-color: var(--white);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            margin-left: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--light-gray);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Auth forms */
+        .auth-container {
+            max-width: 500px;
+            background-color: var(--white);
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin: 2rem auto;
+        }
+
+        .auth-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #d1d5db;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .auth-links {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .auth-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .divider {
+            margin: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            text-align: center;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #d1d5db;
+        }
+
+        .divider span {
+            padding: 0 1rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        /* Bill splitter styles */
+        .bill-splitter {
+            max-width: 800px;
+            background-color: var(--white);
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin: 2rem auto;
+        }
+
+        .bill-splitter-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+        }
+
+        .person-container {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            background-color: var(--light-gray);
+        }
+
+        .person-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .person-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .slider-container {
+            margin: 1.5rem 0;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .slider-label {
+            font-weight: 500;
+        }
+
+        .percentage {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #e5e7eb;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .result-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #f8fafc;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .result-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-weight: 500;
+        }
+
+        .result-value {
+            font-weight: 600;
+        }
+
+        .add-person-btn {
+            background-color: #4ade80;
+            color: var(--white);
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .add-person-btn:hover {
+            background-color: #22c55e;
+        }
+
+        .add-person-btn i {
+            margin-right: 0.5rem;
+        }
+
+        .remove-person-btn {
+            background-color: #f87171;
+            color: var(--white);
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .remove-person-btn:hover {
+            background-color: #ef4444;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group-text {
+            padding: 0.75rem;
+            background-color: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-right: none;
+            border-radius: 0.5rem 0 0 0.5rem;
+            font-weight: 600;
+        }
+
+        .input-group .form-control {
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+
+        /* Error message */
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .navbar .container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .person-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .btn {
+                font-size: 0.875rem;
+                padding: 0.5rem 1rem;
+            }
+        }
+
+        /* Guest names form */
+        .guest-form {
+            max-width: 500px;
+            background-color: var(--white);
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin: 2rem auto;
+        }
+
+        /* Hidden class for showing/hiding elements */
+        .hidden {
+            display: none;
+        }
+
+        /* Tab system for login/signup */
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #d1d5db;
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .auth-tab.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation bar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">₹ Bill Splitter</a>
+            <div class="nav-links">
+                <a href="#" class="nav-link active" id="home-link">Home</a>
+                <a href="#" class="nav-link" id="about-link">About</a>
+                <a href="#" class="nav-link" id="splitter-link">Splitter</a>
+                <a href="#" class="nav-link" id="login-signup-link">Login/Signup</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home/Welcome page -->
+    <div id="home-page" class="container">
+        <div class="hero">
+            <h1 class="hero-title">Welcome to Bill Splitter Calculator</h1>
+            <p class="hero-subtitle">Split bills effortlessly with friends and family. Adjust percentages with sliders to create custom splits.</p>
+            <div>
+                <a href="#" class="btn btn-primary" id="get-started-btn">Get Started</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- About page -->
+    <div id="about-page" class="container hidden">
+        <div class="hero">
+            <h1 class="hero-title">About Bill Splitter</h1>
+            <p class="hero-subtitle">
+                Bill Splitter is a simple, easy-to-use tool that helps you split bills with friends, family or colleagues.
+                Whether you're dining out, sharing rent, or planning a trip, our app makes it easy to determine how much each person should pay.
+            </p>
+            <p class="hero-subtitle">
+                With our intuitive slider system, you can adjust the percentage each person contributes,
+                ensuring that the bill is always split according to what makes sense for your group.
+            </p>
+        </div>
+    </div>
+
+    <!-- Login/Signup page -->
+    <div id="login-signup-page" class="container hidden">
+        <div class="auth-container">
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="login-tab">Login</div>
+                <div class="auth-tab" id="signup-tab">Sign Up</div>
+            </div>
+            
+            <!-- Login Form -->
+            <div id="login-form-container">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-username">Username</label>
+                        <input type="text" id="login-username" class="form-control" placeholder="Enter your username">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" class="form-control" placeholder="Enter your password">
+                        <div class="error-message" id="login-error">Incorrect username or password. Please try again.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+                    <div class="auth-links">
+                        <a href="#" class="auth-link" id="forgot-password-link">Forgot Password?</a>
+                    </div>
+                    <div class="divider">
+                        <span>OR</span>
+                    </div>
+                    <button type="button" class="btn btn-secondary" style="width: 100%;" id="guest-login-btn">Continue as Guest</button>
+                </form>
+            </div>
+            
+            <!-- Signup Form -->
+            <div id="signup-form-container" class="hidden">
+                <form id="signup-form">
+                    <div class="form-group">
+                        <label for="signup-username">Username</label>
+                        <input type="text" id="signup-username" class="form-control" placeholder="Choose a username">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">Email</label>
+                        <input type="email" id="signup-email" class="form-control" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <input type="password" id="signup-password" class="form-control" placeholder="Choose a password">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-confirm-password">Confirm Password</label>
+                        <input type="password" id="signup-confirm-password" class="form-control" placeholder="Confirm your password">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Sign Up</button>
+                    <div class="divider">
+                        <span>OR</span>
+                    </div>
+                    <button type="button" class="btn btn-secondary" style="width: 100%;" id="guest-signup-btn">Continue as Guest</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Guest names form -->
+    <div id="guest-names-page" class="container hidden">
+        <div class="guest-form">
+            <h2 class="auth-title">Enter Names</h2>
+            <form id="guest-names-form">
+                <div class="form-group">
+                    <label for="guest-name-1">First Person's Name</label>
+                    <input type="text" id="guest-name-1" class="form-control" placeholder="Enter name" required>
+                </div>
+                <div class="form-group">
+                    <label for="guest-name-2">Second Person's Name</label>
+                    <input type="text" id="guest-name-2" class="form-control" placeholder="Enter name" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Continue to Bill Splitter</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bill Splitter page -->
+    <div id="splitter-page" class="container hidden">
+        <div class="bill-splitter">
+            <h2 class="bill-splitter-title">Split Your Bill</h2>
+            
+            <div class="form-group">
+                <label for="total-bill">Total Bill Amount</label>
+                <div class="input-group">
+                    <span class="input-group-text">₹</span>
+                    <input type="number" id="total-bill" class="form-control" placeholder="Enter total bill amount" min="0" step="0.01">
+                </div>
+            </div>
+
+            <button class="add-person-btn" id="add-person-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                </svg>
+                Add Person
+            </button>
+
+            <div id="people-container">
+                <!-- People will be added here dynamically -->
+            </div>
+
+            <div class="result-container">
+                <h3 class="result-title">Split Results</h3>
+                <div id="results-list">
+                    <!-- Results will be displayed here -->
+                    <div class="result-item">
+                        <span class="result-label">Total Bill</span>
+                        <span class="result-value">₹ <span id="result-total">0.00</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const homeLink = document.getElementById('home-link');
+        const aboutLink = document.getElementById('about-link');
+        const splitterLink = document.getElementById('splitter-link');
+        const loginSignupLink = document.getElementById('login-signup-link');
+        
+        const homePage = document.getElementById('home-page');
+        const aboutPage = document.getElementById('about-page');
+        const loginSignupPage = document.getElementById('login-signup-page');
+        const splitterPage = document.getElementById('splitter-page');
+        const guestNamesPage = document.getElementById('guest-names-page');
+        
+        const loginTab = document.getElementById('login-tab');
+        const signupTab = document.getElementById('signup-tab');
+        const loginFormContainer = document.getElementById('login-form-container');
+        const signupFormContainer = document.getElementById('signup-form-container');
+        
+        const getStartedBtn = document.getElementById('get-started-btn');
+        const guestLoginBtn = document.getElementById('guest-login-btn');
+        const guestSignupBtn = document.getElementById('guest-signup-btn');
+        
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+        const loginError = document.getElementById('login-error');
+        
+        const guestNamesForm = document.getElementById('guest-names-form');
+        const addPersonBtn = document.getElementById('add-person-btn');
+        const peopleContainer = document.getElementById('people-container');
+        const totalBillInput = document.getElementById('total-bill');
+        const resultsList = document.getElementById('results-list');
+        const resultTotal = document.getElementById('result-total');
+        
+        // Page navigation
+        function showPage(page) {
+            // Hide all pages
+            homePage.classList.add('hidden');
+            aboutPage.classList.add('hidden');
+            loginSignupPage.classList.add('hidden');
+            splitterPage.classList.add('hidden');
+            guestNamesPage.classList.add('hidden');
+            
+            // Reset active class on nav links
+            homeLink.classList.remove('active');
+            aboutLink.classList.remove('active');
+            splitterLink.classList.remove('active');
+            loginSignupLink.classList.remove('active');
+            
+            // Show the requested page
+            page.classList.remove('hidden');
+            
+            // Set the active class on the corresponding nav link
+            if (page === homePage) homeLink.classList.add('active');
+            if (page === aboutPage) aboutLink.classList.add('active');
+            if (page === splitterPage) splitterLink.classList.add('active');
+            if (page === loginSignupPage) loginSignupLink.classList.add('active');
+        }
+        
+        // Tab system for login/signup
+        loginTab.addEventListener('click', () => {
+            loginTab.classList.add('active');
+            signupTab.classList.remove('active');
+            loginFormContainer.classList.remove('hidden');
+            signupFormContainer.classList.add('hidden');
+        });
+        
+        signupTab.addEventListener('click', () => {
+            signupTab.classList.add('active');
+            loginTab.classList.remove('active');
+            signupFormContainer.classList.remove('hidden');
+            loginFormContainer.classList.add('hidden');
+        });
+        
+        // Navigation event listeners
+        homeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage(homePage);
+        });
+        
+        aboutLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage(aboutPage);
+        });
+        
+        splitterLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Redirect to login/signup first when clicking on Splitter
+            showPage(loginSignupPage);
+        });
+        
+        loginSignupLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage(loginSignupPage);
+        });
+        
+        getStartedBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage(loginSignupPage);
+        });
+        
+        // Login form submission - now shows error message
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Always show error message for demo purposes
+            loginError.classList.add('visible');
+        });
+        
+        // Signup form submission
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Show error message for demo purposes
+            alert('Registration functionality would be implemented in the backend.');
+        });
+        
+        // Guest login buttons
+        guestLoginBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage(guestNamesPage);
+        });
+        
+        guestSignupBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage(guestNamesPage);
+        });
+        
+        // Guest names form submission
+        guestNamesForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name1 = document.getElementById('guest-name-1').value;
+            const name2 = document.getElementById('guest-name-2').value;
+            
+            if (!name1 || !name2) {
+                alert('Please enter names for both people.');
+                return;
+            }
+            
+            // Clear any existing people
+            peopleContainer.innerHTML = '';
+            
+            // Add the two initial people
+            addPerson(name1);
+            addPerson(name2);
+            
+            // Show the splitter page
+            showPage(splitterPage);
+            
+            // Initialize the bill splitting
+            updatePercentages();
+            calculateShares();
+        });
+        
+        // Bill splitting functionality
+        let peopleCount = 0;
+        
+        // Add a person to the splitter
+        function addPerson(name = '') {
+            peopleCount++;
+            const personName = name || `Person ${peopleCount}`;
+            
+            const personElement = document.createElement('div');
+            personElement.className = 'person-container';
+            personElement.dataset.id = peopleCount;
+            
+            personElement.innerHTML = `
+                <div class="person-header">
+                    <div class="person-name">${personName}</div>
+                    ${peopleCount > 2 ? '<button class="remove-person-btn">Remove</button>' : ''}
+                </div>
+                <div class="form-group">
+                    <label for="person-${peopleCount}-name">Name</label>
+                    <input type="text" id="person-${peopleCount}-name" class="form-control person-name-input" value="${personName}">
+                </div>
+                <div class="slider-container">
+                    <div class="slider-header">
+                        <span class="slider-label">Percentage Share</span>
+                        <span class="percentage" id="person-${peopleCount}-percentage">0%</span>
+                    </div>
+                    <input type="range" min="0" max="100" value="${Math.floor(100 / peopleCount)}" 
+                        class="slider person-slider" id="person-${peopleCount}-slider" data-id="${peopleCount}">
+                </div>
+                <div class="form-group">
+                    <label for="person-${peopleCount}-amount">Amount to Pay (₹)</label>
+                    <input type="text" id="person-${peopleCount}-amount" class="form-control" readonly>
+                </div>
+            `;
+            
+            peopleContainer.appendChild(personElement);
+            
+            // Add event listeners
+            const slider = personElement.querySelector('.person-slider');
+            slider.addEventListener('input', function() {
+                // Fixed: Properly balance sliders when one is moved
+                balanceSliders(this);
+                calculateShares();
+            });
+            
+            const nameInput = personElement.querySelector('.person-name-input');
+            nameInput.addEventListener('input', () => {
+                // Update the name in the header
+                personElement.querySelector('.person-name').textContent = nameInput.value || `Person ${personElement.dataset.id}`;
+                // Recalculate to update the results display
+                calculateShares();
+            });
+            
+            const removeBtn = personElement.querySelector('.remove-person-btn');
+            if (removeBtn) {
+                removeBtn.addEventListener('click', () => {
+                    personElement.remove();
+                    balanceSliders();
+                    calculateShares();
+                });
+            }
+        }
+        
+        // Fixed: Balance sliders to ensure they always sum to 100%
+function balanceSliders(changedSlider = null) {
+    const sliders = document.querySelectorAll('.person-slider');
+    
+    // If a slider was changed, adjust other sliders proportionally
+    if (changedSlider) {
+        const changedValue = parseInt(changedSlider.value);
+        const changedId = changedSlider.dataset.id;
+        
+        // Calculate how much value to distribute among other sliders
+        const otherSliders = Array.from(sliders).filter(slider => slider.dataset.id !== changedId);
+        const remainingValue = 100 - changedValue;
+        
+        if (otherSliders.length > 0) {
+            // If there's only one other slider, give it the remaining value
+            if (otherSliders.length === 1) {
+                otherSliders[0].value = remainingValue;
+                document.getElementById(`person-${otherSliders[0].dataset.id}-percentage`).textContent = `${remainingValue}%`;
+            } else {
+                // Get sum of current values of other sliders
+                const currentSum = otherSliders.reduce((sum, slider) => sum + parseInt(slider.value), 0);
+                
+                if (currentSum > 0) {
+                    // Distribute remaining value proportionally
+                    otherSliders.forEach(slider => {
+                        const proportion = parseInt(slider.value) / currentSum;
+                        slider.value = Math.round(remainingValue * proportion);
+                        document.getElementById(`person-${slider.dataset.id}-percentage`).textContent = `${slider.value}%`;
+                    });
+                } else {
+                    // Equal distribution if current sum is 0
+                    const equalShare = Math.floor(remainingValue / otherSliders.length);
+                    otherSliders.forEach((slider, index) => {
+                        slider.value = index === 0 ? remainingValue - (equalShare * (otherSliders.length - 1)) : equalShare;
+                        document.getElementById(`person-${slider.dataset.id}-percentage`).textContent = `${slider.value}%`;
+                    });
+                }
+            }
+        }
+    }
+    
+    // Update all percentage displays
+    updatePercentages();
+}
+
+// Ensure updatePercentages is defined outside of balanceSliders
+function updatePercentages() {
+    const sliders = document.querySelectorAll('.person-slider');
+    sliders.forEach(slider => {
+        document.getElementById(`person-${slider.dataset.id}-percentage`).textContent = `${slider.value}%`;
+    });
+}
+                
+                 // Update all percentage displays
+        function updatePercentages() {
+            const sliders = document.querySelectorAll('.person-slider');
+            sliders.forEach(slider => {
+                document.getElementById(`person-${slider.dataset.id}-percentage`).textContent = `${slider.value}%`;
+            });
+        }
+        
+        // Calculate each person's share
+        function calculateShares() {
+            const totalBill = parseFloat(totalBillInput.value) || 0;
+            resultTotal.textContent = totalBill.toFixed(2);
+            
+            // Clear previous results except for the total bill
+            while (resultsList.children.length > 1) {
+                resultsList.removeChild(resultsList.lastChild);
+            }
+            
+            const personContainers = document.querySelectorAll('.person-container');
+            personContainers.forEach(container => {
+                const id = container.dataset.id;
+                const name = container.querySelector('.person-name-input').value || `Person ${id}`;
+                const percentage = parseInt(container.querySelector('.person-slider').value);
+                const amount = (totalBill * percentage / 100).toFixed(2);
+                
+                // Update the amount input
+                container.querySelector(`#person-${id}-amount`).value = `₹ ${amount}`;
+                
+                // Add to results list
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                resultItem.innerHTML = `
+                    <span class="result-label">${name} (${percentage}%)</span>
+                    <span class="result-value">₹ ${amount}</span>
+                `;
+                resultsList.appendChild(resultItem);
+            });
+        }
+        
+        // Add person button click event
+        addPersonBtn.addEventListener('click', () => {
+            addPerson();
+            balanceSliders();
+            calculateShares();
+        });
+        
+        // Total bill input event
+        totalBillInput.addEventListener('input', calculateShares);
+        
+        // Initialize with focus on home page
+        showPage(homePage);
+    
+    </script>
+</body>
+</html> 
