@@ -5,6 +5,41 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 import json
 from datetime import datetime
+from flask import Flask, render_template, request
+import pytesseract
+from PIL import Image
+import os
+
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = 'uploads/'
+
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/upload', methods=['POST'])
+def upload_receipt():
+    if 'receipt' not in request.files:
+        return "No file part"
+
+    file = request.files['receipt']
+    if file.filename == '':
+        return "No selected file"
+
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    file.save(filepath)
+
+    image = Image.open(filepath)
+    extracted_text = pytesseract.image_to_string(image)
+
+    # Optional: Parse the text into items and prices
+    lines = extracted_text.split('\n')
+    items = [line for line in lines if line.strip() != ""]
+
+    return render_template('results.html', items=items)
 
 # Initialize Flask app
 app = Flask(__name__, static_folder="static", template_folder="templates")
