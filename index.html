@@ -597,6 +597,12 @@
             </div>
         </div>
     </div>
+    <h2>Upload Receipt for OCR</h2>
+<form action="/upload" method="post" enctype="multipart/form-data">
+  <input type="file" name="receipt" accept="image/*" required>
+  <input type="submit" value="Upload Receipt">
+</form>
+
 
     <script>
         // DOM Elements
@@ -918,5 +924,6 @@ function updatePercentages() {
         showPage(homePage);
     
     </script>
+    
 </body>
 </html> 
