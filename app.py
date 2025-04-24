@@ -6,6 +6,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import json
 from datetime import datetime
 from flask import Flask, render_template, request
+from predictor import predict_split
+
 import pytesseract
 from PIL import Image
 import os
@@ -300,6 +302,13 @@ def ai_suggestions():
         'success': True,
         'suggestions': suggestions
     })
+    @app.route('/predict_split', methods=['POST'])
+def predict():
+    activity = request.form['activity']
+    group_type = request.form['group_type']
+    num_people = int(request.form['num_people'])
+    split = predict_split(activity, group_type, num_people)
+    return render_template("result.html", split=split)
 
 if __name__ == '__main__':
     # Create a default guest user if it doesn't exist
