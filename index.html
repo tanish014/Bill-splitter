@@ -584,6 +584,18 @@
             <div id="people-container">
                 <!-- People will be added here dynamically -->
             </div>
+            <!-- Upload Receipt Section -->
+<div class="container" id="upload-receipt-page">
+    <h2 class="upload-title">Or Upload Your Receipt</h2>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="receipt">Choose receipt image</label>
+            <input type="file" name="receipt" accept="image/*" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">Upload Receipt</button>
+    </form>
+</div>
+
 
             <div class="result-container">
                 <h3 class="result-title">Split Results</h3>
@@ -597,13 +609,6 @@
             </div>
         </div>
     </div>
-    <h2>Upload Receipt for OCR</h2>
-<form action="/upload" method="post" enctype="multipart/form-data">
-  <input type="file" name="receipt" accept="image/*" required>
-  <input type="submit" value="Upload Receipt">
-</form>
-
-
     <script>
         // DOM Elements
         const homeLink = document.getElementById('home-link');
