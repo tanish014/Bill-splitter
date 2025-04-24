@@ -540,6 +540,8 @@
             </div>
         </div>
     </div>
+  
+
 
     <!-- Guest names form -->
     <div id="guest-names-page" class="container hidden">
@@ -580,7 +582,23 @@
                 </svg>
                 Add Person
             </button>
+              <label for="activity">Activity Type:</label>
+<label for="activity">Activity Type:</label>
+<select name="activity" id="activity" class="form-control">
+  <option value="dining">Dining</option>
+  <option value="travel">Travel</option>
+  <option value="shopping">Shopping</option>
+</select>
 
+<label for="group_type">Group Type:</label>
+<select name="group_type" id="group_type" class="form-control">
+  <option value="friends">Friends</option>
+  <option value="family">Family</option>
+  <option value="colleagues">Colleagues</option>
+</select>
+
+<label for="num_people">Number of People:</label>
+<input type="number" name="num_people" class="form-control" required>
             <div id="people-container">
                 <!-- People will be added here dynamically -->
             </div>
