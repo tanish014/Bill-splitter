@@ -302,7 +302,7 @@ def ai_suggestions():
         'success': True,
         'suggestions': suggestions
     })
-    @app.route('/predict_split', methods=['POST'])
+@app.route('/predict_split', methods=['POST'])
 def predict():
     activity = request.form['activity']
     group_type = request.form['group_type']
