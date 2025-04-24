@@ -1,16 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Extracted Receipt</title>
-</head>
-<body>
-  <h2>Extracted Items from Receipt</h2>
-  <ul>
-    {% for item in items %}
-      <li>{{ item }}</li>
-    {% endfor %}
-  </ul>
-  <a href="/">← Go Back</a>
-</body>
-</html>
-
+<h2>Predicted Split</h2>
+<ul>
+  {% for amount in split %}
+    <li>{{ amount | round(2) }}</li>
+  {% endfor %}
+</ul>
+<a href="/">Back</a>
